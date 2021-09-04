@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_margin="16dp"
     tools:context=".MainActivity">
 
 
@@ -12,11 +13,24 @@
         android:id="@+id/strengthPasswordView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:background="#DDD"
+        android:paddingHorizontal="2dp"
         app:cv_strength_bar_radius="10"
         app:cv_strength_size="5" />
 
     <EditText
         android:id="@+id/etContent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        />
+
+    <androidx.appcompat.widget.AppCompatSeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:min="0"
+        android:max="5"/>
 </LinearLayout>
