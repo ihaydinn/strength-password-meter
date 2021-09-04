@@ -40,9 +40,7 @@ class StrengthPasswordView : View {
     override fun onDraw(canvas: Canvas) {
         val TEXT_HEIGHT = mStrengthTextHeightValue * density
         val SPACER = mStrengthBarSpacerValue
-        val HEIGHT = (mStrengthTextHeightValue / 5)
         val WIDTH = mStrengthBarSizeValue * density
-        val TOP = ((TEXT_HEIGHT / 5) * 3)
 
         val r = Rect()
         canvas.getClipBounds(r)
