@@ -8,12 +8,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
-
-import kotlin.math.roundToInt
+import kotlin.math.max
 
 
 class StrengthPasswordView : View {
@@ -26,8 +26,10 @@ class StrengthPasswordView : View {
     private var mStrengthBarSpacerValue = 0
     private var mStrengthTextHeightValue = 0
     private var mListSelection = 0
+    private var mTextPaddingStart = 0f
     private var mList = listOf<State>()
 
+    private val density = resources.displayMetrics.density
 
     constructor(context: Context?) : super(context) {}
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
@@ -36,39 +38,65 @@ class StrengthPasswordView : View {
 
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
-        val TEXT_HEIGHT = mStrengthTextHeightValue
+        val TEXT_HEIGHT = mStrengthTextHeightValue * density
         val SPACER = mStrengthBarSpacerValue
         val HEIGHT = (mStrengthTextHeightValue / 5)
-        val WIDTH = mStrengthBarSizeValue
+        val WIDTH = mStrengthBarSizeValue * density
         val TOP = ((TEXT_HEIGHT / 5) * 3)
-        for (i in 0 until mStrengthValue) {
-            paint!!.textSize = TEXT_HEIGHT.toFloat()
-            if (i < mTintSize) {
-                paint!!.color = mList[mListSelection].color
-                paint!!.style = Paint.Style.FILL
 
+        val r = Rect()
+        canvas.getClipBounds(r)
+
+        for (i in 0 until mStrengthValue) {
+            paint?.textSize = TEXT_HEIGHT.toFloat()
+            if (i < mTintSize) {
+                paint?.color = mList[mListSelection].color
             } else {
-                paint!!.color = resources.getColor(android.R.color.darker_gray)
+                paint?.color = resources.getColor(android.R.color.darker_gray)
             }
+
             canvas.drawRoundRect(
                 RectF(
                     (i * WIDTH + SPACER * i).toFloat(),
-                    TOP.toFloat(),
+                    r.height() / 2f - 4f,
                     ((i + 1) * WIDTH + i * SPACER).toFloat(),
-                    (TOP + HEIGHT).toFloat()
+                    r.height() / 2f + 4f
                 ), mRadius.toFloat(), mRadius.toFloat(), paint!!
             )
+
+
             if (i == mStrengthValue - 1) {
-                canvas.drawText(
-                    mList[mListSelection].text!!,
-                    ((i + 1) * WIDTH + (i + 1) * SPACER + 10).toFloat(), TEXT_HEIGHT.toFloat(),
-                    paint!!
+                paint?.color = mList[mListSelection].color
+                /*  canvas.drawText(
+                      mList[mListSelection].text!!,
+                      ((i + 1) * WIDTH + (i + 1) * SPACER).toFloat(), TEXT_HEIGHT.toFloat(),
+                      paint!!
+                  )*/
+                drawText(
+                    canvas,
+                    paint!!,
+                    mList[mListSelection].text,
+                    maxWidth + mTextPaddingStart + ((i + 1) * WIDTH + (i + 1) * SPACER).toFloat()
                 )
             }
         }
+
         requestLayout()
         super.onDraw(canvas)
     }
+
+    private fun drawText(canvas: Canvas, paint: Paint, text: String, posX: Float) {
+        val r = Rect()
+        canvas.getClipBounds(r)
+        val cHeight: Int = r.height()
+        val cWidth: Int = r.width()
+        paint.textAlign = Paint.Align.RIGHT
+        paint.getTextBounds(text, 0, text.length, r)
+        val x: Float = posX
+        val y: Float = cHeight / 2f + r.height() / 2f - r.bottom
+        canvas.drawText(text, x, y, paint)
+    }
+
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val widthMode = MeasureSpec.getMode(widthMeasureSpec)
@@ -76,11 +104,17 @@ class StrengthPasswordView : View {
         val widthSize = MeasureSpec.getSize(widthMeasureSpec)
         val heightSize = MeasureSpec.getSize(heightMeasureSpec)
 
+        val bounds = Rect()
+        paint?.getTextBounds(
+            mList[mListSelection].text,
+            0,
+            mList[mListSelection].text.length,
+            bounds
+        )
+
         val desiredWidth =
-            (mStrengthValue) * (mStrengthBarSizeValue + mStrengthBarSpacerValue) + 4 * paint?.measureText(
-                mList[mListSelection].text
-            )!! + mStrengthTextHeightValue
-        val desiredHeight = (mStrengthTextHeightValue - paint?.fontMetrics?.top!!).roundToInt()
+            (mStrengthValue) * (mStrengthBarSizeValue * density + mStrengthBarSpacerValue) + getMaxTextWidth() + mTextPaddingStart
+        val desiredHeight = getMaxTextHeight()
 
         val widthResult = when (widthMode) {
             MeasureSpec.EXACTLY -> {
@@ -120,13 +154,49 @@ class StrengthPasswordView : View {
         values.recycle()
     }
 
+    private fun getMaxTextHeight(): Int {
+        var maxHeight = 0
+        mList.forEachIndexed { index, state ->
+            val bounds = Rect()
+            paint?.getTextBounds(
+                mList[index].text,
+                0,
+                mList[index].text.length,
+                bounds
+            )
+            maxHeight = max(maxHeight, bounds.height())
+        }
+        return maxHeight
+    }
+
+    var maxWidth = 0
+    private fun getMaxTextWidth(): Int {
+
+        mList.forEachIndexed { index, state ->
+            val bounds = Rect()
+            paint?.getTextBounds(
+                mList[index].text,
+                0,
+                mList[index].text.length,
+                bounds
+            )
+            maxWidth = max(maxWidth, bounds.width())
+        }
+        return maxWidth
+    }
+
     data class State(
         val text: String,
         @ColorInt val color: Int
     )
 
-    fun setSelection(value : Int){
+    fun setSelection(value: Int) {
         mListSelection = value
+        requestLayout()
+    }
+
+    fun setTextPaddingStart(value: Float) {
+        mTextPaddingStart = value * density
     }
 
     fun setList(color: List<State>) {
