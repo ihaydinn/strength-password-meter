@@ -19,7 +19,6 @@ class MainActivity : AppCompatActivity() {
         val seekBar = findViewById<SeekBar>(R.id.seekBar)
 
         view.setStrengthCountTintColor(R.color.cardview_light_background)
-        view.setStrengthCountSize(5)
         view.setStrengthBarSizeValue(16)
         view.setStrengthBarSpacerValue(10)
         view.setStrengthTextHeightValue(20)
@@ -28,23 +27,28 @@ class MainActivity : AppCompatActivity() {
         val states = listOf(
             StrengthPasswordView.State(
                 "Çok Zayıf",
-                ContextCompat.getColor(this, android.R.color.holo_red_dark)
+                ContextCompat.getColor(this, android.R.color.holo_red_dark),
+                1
             ),
             StrengthPasswordView.State(
                 "Zayıf",
-                ContextCompat.getColor(this, android.R.color.holo_red_light)
+                ContextCompat.getColor(this, android.R.color.holo_red_light),
+                2
             ),
             StrengthPasswordView.State(
                 "Orta",
-                ContextCompat.getColor(this, android.R.color.holo_orange_light)
+                ContextCompat.getColor(this, android.R.color.holo_orange_light),
+                3
             ),
             StrengthPasswordView.State(
                 "Güçlü",
-                ContextCompat.getColor(this, android.R.color.holo_green_light)
+                ContextCompat.getColor(this, android.R.color.holo_green_light),
+                4
             ),
             StrengthPasswordView.State(
                 "Çok Güçlü",
-                ContextCompat.getColor(this, android.R.color.holo_green_dark)
+                ContextCompat.getColor(this, android.R.color.holo_green_dark),
+                5
             )
         )
 
@@ -55,24 +59,19 @@ class MainActivity : AppCompatActivity() {
                 if (value != 0) {
                     when (value) {
                         1 -> {
-                            view.setSelection(0)
-                            view.setTintSize(1)
+                            view.setStrengthEnabledValues(0)
                         }
                         2 -> {
-                            view.setSelection(1)
-                            view.setTintSize(2)
+                            view.setStrengthEnabledValues(1)
                         }
                         3 -> {
-                            view.setSelection(2)
-                            view.setTintSize(3)
+                            view.setStrengthEnabledValues(2)
                         }
                         4 -> {
-                            view.setSelection(3)
-                            view.setTintSize(4)
+                            view.setStrengthEnabledValues(3)
                         }
                         5 -> {
-                            view.setSelection(4)
-                            view.setTintSize(5)
+                            view.setStrengthEnabledValues(4)
                         }
                     }
                 }
@@ -97,20 +96,16 @@ class MainActivity : AppCompatActivity() {
                 if (!value.isNullOrEmpty()) {
                     when {
                         value.toString() == "zay" -> {
-                            view.setSelection(0)
-                            view.setTintSize(1)
+                            view.setStrengthEnabledValues(0)
                         }
                         value.toString() == "zayor" -> {
-                            view.setSelection(1)
-                            view.setTintSize(3)
+                            view.setStrengthEnabledValues(2)
                         }
                         value.toString() == "zayorgü" -> {
-                            view.setSelection(2)
-                            view.setTintSize(5)
+                            view.setStrengthEnabledValues(4)
                         }
                         else -> {
-                            view.setSelection(0)
-                            view.setTintSize(1)
+                            view.setStrengthEnabledValues(0)
                         }
                     }
                 }

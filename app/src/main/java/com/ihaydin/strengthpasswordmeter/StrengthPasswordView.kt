@@ -18,14 +18,12 @@ import kotlin.math.max
 
 class StrengthPasswordView : View {
     private var paint: Paint? = null
-    private var mStrengthCountSize = 0
     private var mStrengthBarRadius = 0
-    private var mStrengthTintCountSize = 0
     private var mStrengthCountTintColor = 0
     private var mStrengthBarSizeValue = 0
     private var mStrengthBarSpacerValue = 0
     private var mStrengthTextHeightValue = 0
-    private var mListSelection = 0
+    private var mStrengthSelectedIndex = 0
     private var mTextPaddingStart = 0f
     private var mList = listOf<State>()
 
@@ -45,31 +43,31 @@ class StrengthPasswordView : View {
         val r = Rect()
         canvas.getClipBounds(r)
 
-        for (i in 0 until mStrengthCountSize) {
-            paint?.textSize = TEXT_HEIGHT.toFloat()
-            if (i < mStrengthTintCountSize) {
-                paint?.color = mList[mListSelection].color
+        for (i in 0 until mList.size) {
+            paint?.textSize = TEXT_HEIGHT
+            if (i < mList[mStrengthSelectedIndex].tintSize) {
+                paint?.color = mList[mStrengthSelectedIndex].color
             } else {
                 paint?.color = resources.getColor(android.R.color.darker_gray)
             }
 
             canvas.drawRoundRect(
                 RectF(
-                    (i * WIDTH + SPACER * i).toFloat(),
+                    (i * WIDTH + SPACER * i),
                     r.height() / 2f - 4f,
-                    ((i + 1) * WIDTH + i * SPACER).toFloat(),
+                    ((i + 1) * WIDTH + i * SPACER),
                     r.height() / 2f + 4f
                 ), mStrengthBarRadius.toFloat(), mStrengthBarRadius.toFloat(), paint!!
             )
 
 
-            if (i == mStrengthCountSize - 1) {
-                paint?.color = mList[mListSelection].color
+            if (i == mList.size - 1) {
+                paint?.color = mList[mStrengthSelectedIndex].color
                 drawText(
                     canvas,
                     paint!!,
-                    mList[mListSelection].text,
-                    maxWidth + mTextPaddingStart + ((i + 1) * WIDTH + (i + 1) * SPACER).toFloat()
+                    mList[mStrengthSelectedIndex].text,
+                    maxWidth + mTextPaddingStart + ((i + 1) * WIDTH + (i + 1) * SPACER)
                 )
             }
         }
@@ -99,14 +97,14 @@ class StrengthPasswordView : View {
 
         val bounds = Rect()
         paint?.getTextBounds(
-            mList[mListSelection].text,
+            mList[mStrengthSelectedIndex].text,
             0,
-            mList[mListSelection].text.length,
+            mList[mStrengthSelectedIndex].text.length,
             bounds
         )
 
         val desiredWidth =
-            (mStrengthCountSize) * (mStrengthBarSizeValue * density + mStrengthBarSpacerValue) + getMaxTextWidth() + mTextPaddingStart
+            (mList.size) * (mStrengthBarSizeValue * density + mStrengthBarSpacerValue) + getMaxTextWidth() + mTextPaddingStart
         val desiredHeight = getMaxTextHeight()
 
         val widthResult = when (widthMode) {
@@ -140,9 +138,10 @@ class StrengthPasswordView : View {
     private fun init(context: Context, attrs: AttributeSet?) {
         val values =
             context.theme.obtainStyledAttributes(attrs, R.styleable.StrengthPasswordView, 0, 0)
-        mStrengthCountSize = values.getInt(R.styleable.StrengthPasswordView_cv_strength_count_size, 0)
-        mStrengthBarRadius = values.getInt(R.styleable.StrengthPasswordView_cv_strength_bar_radius, 0)
-        mStrengthTintCountSize = values.getInt(R.styleable.StrengthPasswordView_cv_strength_tint_count_size, 0)
+        mStrengthBarRadius =
+            values.getInt(R.styleable.StrengthPasswordView_cv_strength_bar_radius, 0)
+        mStrengthSelectedIndex =
+            values.getInt(R.styleable.StrengthPasswordView_cv_strength_tint_count_size, 0)
         paint = Paint(Paint.ANTI_ALIAS_FLAG)
         values.recycle()
     }
@@ -178,15 +177,16 @@ class StrengthPasswordView : View {
         return maxWidth
     }
 
-    data class State(
-        val text: String,
-        @ColorInt val color: Int
-    )
-
-    fun setSelection(value: Int) {
-        mListSelection = value
+    fun setStrengthEnabledValues(state: Int) {
+        mStrengthSelectedIndex = state
         requestLayout()
     }
+
+    data class State(
+        val text: String,
+        @ColorInt val color: Int,
+        val tintSize: Int
+    )
 
     fun setTextPaddingStart(value: Float) {
         mTextPaddingStart = value * density
@@ -198,14 +198,6 @@ class StrengthPasswordView : View {
 
     fun setStrengthCountTintColor(color: Int) {
         mStrengthCountTintColor = color
-    }
-
-    fun setTintSize(size: Int) {
-        mStrengthTintCountSize = size
-    }
-
-    fun setStrengthCountSize(size: Int) {
-        mStrengthCountSize = size
     }
 
     fun setStrengthBarSizeValue(value: Int) {

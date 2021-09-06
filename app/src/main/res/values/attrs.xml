@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="StrengthPasswordView">
-        <attr name="cv_strength_count_size" format="integer"/>
         <attr name="cv_strength_tint_count_size" format="integer"/>
         <attr name="cv_strength_bar_size" format="integer"/>
         <attr name="cv_strength_bar_radius" format="integer"/>
