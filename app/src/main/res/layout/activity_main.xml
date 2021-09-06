@@ -14,10 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:background="#DDD"
-        android:paddingHorizontal="2dp"
-        app:cv_strength_bar_radius="10"
-        app:cv_strength_size="5" />
+        android:background="#DDD" />
 
     <EditText
         android:id="@+id/etContent"
