@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         val etContent = findViewById<EditText>(R.id.etContent)
         val seekBar = findViewById<SeekBar>(R.id.seekBar)
 
-        view.setStrengthCountTintColor(R.color.cardview_light_background)
+        view.setStrengthBarsTintColor(android.R.color.darker_gray)
         view.setStrengthBarSizeValue(16)
         view.setStrengthBarSpacerValue(10)
         view.setStrengthTextHeightValue(20)

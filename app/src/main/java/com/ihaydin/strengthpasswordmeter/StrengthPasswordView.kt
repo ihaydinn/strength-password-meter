@@ -19,7 +19,7 @@ import kotlin.math.max
 class StrengthPasswordView : View {
     private var paint: Paint? = null
     private var mStrengthBarRadius = 0
-    private var mStrengthCountTintColor = 0
+    private var mStrengthBarsTintColor = 0
     private var mStrengthBarSizeValue = 0
     private var mStrengthBarSpacerValue = 0
     private var mStrengthTextHeightValue = 0
@@ -48,7 +48,7 @@ class StrengthPasswordView : View {
             if (i < mList[mStrengthSelectedIndex].tintSize) {
                 paint?.color = mList[mStrengthSelectedIndex].color
             } else {
-                paint?.color = resources.getColor(android.R.color.darker_gray)
+                paint?.color = resources.getColor(mStrengthBarsTintColor)
             }
 
             canvas.drawRoundRect(
@@ -196,8 +196,8 @@ class StrengthPasswordView : View {
         mList = color
     }
 
-    fun setStrengthCountTintColor(color: Int) {
-        mStrengthCountTintColor = color
+    fun setStrengthBarsTintColor(color: Int) {
+        mStrengthBarsTintColor = color
     }
 
     fun setStrengthBarSizeValue(value: Int) {

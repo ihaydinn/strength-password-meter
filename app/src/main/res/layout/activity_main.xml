@@ -14,6 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
+        app:cv_strength_bar_radius="20"
         android:background="#DDD" />
 
     <EditText
